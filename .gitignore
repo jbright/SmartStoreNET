@@ -222,3 +222,6 @@ Kopie von*
 src/SmartStoreNET.Packager.sln
 Log.txt
 .vs/
+/src/Presentation/SmartStore.Web/Web.Release.config
+/src/Presentation/SmartStore.Web/Web.config
+/src/Presentation/SmartStore.Web/Web.Debug.config
