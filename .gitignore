@@ -225,3 +225,4 @@ Log.txt
 /src/Presentation/SmartStore.Web/Web.Release.config
 /src/Presentation/SmartStore.Web/Web.config
 /src/Presentation/SmartStore.Web/Web.Debug.config
+/src/Import/App.config
