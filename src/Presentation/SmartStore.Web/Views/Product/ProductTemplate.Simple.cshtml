@@ -13,7 +13,7 @@
 @using SmartStore.Web;
 
 @{
-	Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+    Layout = "~/Views/Shared/_ColumnsThree.cshtml";
 
 	//title, meta
 	Html.AddTitleParts(!String.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
@@ -362,3 +362,8 @@
     	$('#product-details-form').productDetail(settings);
     });
 </script>
+
+@section right 
+{
+    <text>@Html.Action("index", "referencegame", new { productId = Model.Id })</text>
+}

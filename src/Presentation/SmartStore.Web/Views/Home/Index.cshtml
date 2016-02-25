@@ -3,7 +3,6 @@
 @{
     Layout = "~/Views/Shared/_ColumnsThree.cshtml";
 }
-
 <div class="page home-page">
     <div class="page-body">
         @Html.Widget("home_page_top")
@@ -26,4 +25,7 @@
 
     @Html.Action("ContentSlider", "Home")
 
+}
+@section right_top {
+    @Html.Action("Random", "DidYouKnow", new { area = "" })
 }

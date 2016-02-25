@@ -1,0 +1,129 @@
+﻿@model SmartStore.Web.Controllers.ReferenceGameModel
+
+@if (Model != null)
+{
+    <div class="block block-bordered block-recently-viewed-products">
+        <div class="block-title">
+            Quick Game Facts
+        </div>
+        <div class="block-body listbox">
+            <h5>@Model.Game.Name</h5>
+
+            @if (!String.IsNullOrWhiteSpace(Model.Game.Description))
+            {
+                <p>
+                    @Html.Raw(Model.Game.Description)
+                </p>
+            }
+            @if (!String.IsNullOrWhiteSpace(Model.Game.AdditionalDescription))
+            {
+                <h5>Coin-Op Overview</h5>
+                <p>
+                    @Html.Raw(Model.Game.AdditionalDescription)
+                </p>
+            }
+
+            @if (Model.Pictures != null && Model.Pictures.Count > 0)
+            {
+                <h5>Screen Captures</h5>
+                <center>
+                    @foreach (var picture in Model.Pictures)
+                    {
+                        <a href="@picture.Path" target="_blank"><img src="@picture.Path" style="margin-bottom: 4px;" /></a><br />
+                    }
+                </center>
+            }            
+            
+                
+            <h5>Coin-Op Technical Details</h5>
+            <table class="table table-condensed">
+                <tr>
+                    <td>
+                        Year:
+                    </td>
+                    <td>
+                        @Model.Game.Year
+                    </td>
+                </tr>
+                @if (!String.IsNullOrWhiteSpace(Model.Game.Manufacturer))
+                {
+                    <tr>
+                        <td>
+                            Manufacturer:
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Manufacturer", "Redirector", new { man = Model.Game.Manufacturer })">@Model.Game.Manufacturer</a>
+                        </td>
+                    </tr>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.Game.Genre))
+                {
+                    <tr>
+                        <td>
+                            Genre:
+                        </td>
+                        <td>
+                            @Model.Game.Genre
+                        </td>
+                    </tr>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.Game.NumberPlayers))
+                {
+                    <tr>
+                        <td>
+                            Players:
+                        </td>
+                        <td>
+                            @Model.Game.NumberPlayers
+                        </td>
+                    </tr>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.Game.ConversionType))
+                {
+                    <tr>
+                        <td>
+                            Conversion Class:
+                        </td>
+                        <td>
+                            @Model.Game.ConversionType
+                        </td>
+                    </tr>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.Game.MonitorType))
+                {
+                    <tr>
+                        <td>
+                            Monitor Type:
+                        </td>
+                        <td>
+                            @Model.Game.MonitorType
+                        </td>
+                    </tr>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.Game.MonitorOrientation))
+                {
+                    <tr>
+                        <td>
+                            Orientation:
+                        </td>
+                        <td>
+                            @Model.Game.MonitorOrientation
+                        </td>
+                    </tr>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.Game.MonitorResolution))
+                {
+                    <tr>
+                        <td>
+                            Monitor Resolution:
+                        </td>
+                        <td>
+                            @Model.Game.MonitorResolution
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+}
