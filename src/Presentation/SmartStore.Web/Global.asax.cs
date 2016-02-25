@@ -45,6 +45,29 @@ namespace SmartStore.Web
 			routes.IgnoreRoute("{resource}.ashx/{*pathInfo}");
 			routes.IgnoreRoute(".db/{*virtualpath}");
 
+            // Legacy mapping to handle redirects
+            routes.MapRoute(
+                "Legacy_Product_Redirect",
+                "Game.aspx/{id}",
+                new { controller = "Redirector", action = "Product", },
+                new { id = @"\d+" });
+
+            routes.MapRoute(
+                "Legacy_Category_Redirect",
+                "Browse.aspx",
+                new { controller = "Redirector", action = "Category", });
+
+            routes.MapRoute(
+                "Legacy_Manufacturer_Redirect",
+                "Manufacturer.aspx",
+                new { controller = "Redirector", action = "Manufacturer", });
+
+            routes.MapRoute(
+                "Legacy_Default_Redirect",
+                "Default.aspx",
+                new { controller = "Redirector", action = "HomePage", });
+
+
 			// register routes (core, admin, plugins, etc)
 			var routePublisher = EngineContext.Current.Resolve<IRoutePublisher>();
 			routePublisher.RegisterRoutes(routes);

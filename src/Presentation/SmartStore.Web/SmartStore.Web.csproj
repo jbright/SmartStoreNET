@@ -251,6 +251,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FilterController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\RedirectorController.cs" />
     <Compile Include="Controllers\ReturnRequestController.cs" />
     <Compile Include="Controllers\ExternalAuthenticationController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
@@ -1853,6 +1854,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\select2\" />
+    <Folder Include="Views\Redirector\" />
     <Folder Include="Views\TaskScheduler\" />
   </ItemGroup>
   <ItemGroup>
