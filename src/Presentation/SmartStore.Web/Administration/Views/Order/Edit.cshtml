@@ -1430,6 +1430,18 @@
                                             <strong>@T("Admin.Orders.Products.SKU")</strong><text>:</text>
                                             @item.Sku
                                         }
+                                        @if (!String.IsNullOrEmpty(item.AdminComment))
+                                        {
+                                            <br />
+                                            <strong>Comment</strong><text>:</text>
+                                            @item.AdminComment
+                                        }
+                                        @if (!String.IsNullOrEmpty(item.Description))
+                                        {
+                                            <br />
+                                            <strong>Description</strong><text>:</text>
+                                            @item.Description
+                                        }
                                         @if (item.ProductType == ProductType.BundledProduct)
                                         {
                                             <br />
@@ -1750,15 +1762,10 @@
             </td>
         </tr>
     </table>  
-
+    <div class="caption-container">
+        <h3 class="bordered">@T("Admin.Orders.OrderNotes.AddTitle")</h3>
+    </div>
     <table class="adminContent">
-		<tr>
-			<td colspan="2">
-				<div class="admin-config-group">
-					<div class="title">@T("Admin.Orders.OrderNotes.AddTitle")</div>
-				</div>
-			</td>
-		</tr>
         <tr>
             <td class="adminTitle">
                 @Html.SmartLabelFor(model => model.AddOrderNoteMessage)

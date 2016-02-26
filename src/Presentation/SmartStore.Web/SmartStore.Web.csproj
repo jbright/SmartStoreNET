@@ -1862,6 +1862,7 @@
     <Content Include="Views\Common\EntityPicker.cshtml" />
     <Content Include="Views\Common\EntityPickerList.cshtml" />
     <Content Include="Views\Widget\TabWidgets.cshtml" />
+    <Content Include="Views\DidYouKnow\Random.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\select2\" />

@@ -474,12 +474,27 @@ namespace SmartStore.Admin.Controllers
                     hasDownloadableItems = true;
 
                 orderItem.Product.MergeWithCombination(orderItem.AttributesXml);
+                string desc = string.Empty;
+                if (!String.IsNullOrWhiteSpace(orderItem.Product.FullDescription))
+                {
+                    desc = System.Text.RegularExpressions.Regex.Replace(orderItem.Product.FullDescription, @"<[^>]+>|&nbsp;", "").Trim();
+                    if (desc.Length > 150)
+                        desc = desc.Substring(0, 150) + "...";
+                }
+                else if (!String.IsNullOrWhiteSpace(orderItem.Product.ShortDescription))
+                {
+                    desc = System.Text.RegularExpressions.Regex.Replace(orderItem.Product.ShortDescription, @"<[^>]+>|&nbsp;", "").Trim();
+                    if (desc.Length > 150)
+                        desc = desc.Substring(0, 150) + "...";
+                }
                 var orderItemModel = new OrderModel.OrderItemModel
                 {
                     Id = orderItem.Id,
 					ProductId = orderItem.ProductId,
 					ProductName = orderItem.Product.GetLocalized(x => x.Name),
                     Sku = orderItem.Product.Sku,
+                    AdminComment = orderItem.Product.AdminComment,
+                    Description = desc,
 					ProductType = orderItem.Product.ProductType,
 					ProductTypeName = orderItem.Product.GetProductTypeLabel(_localizationService),
 					ProductTypeLabelHint = orderItem.Product.ProductTypeLabelHint,

@@ -1,0 +1,13 @@
+﻿@model SmartStore.Web.Controllers.DidYouKnow
+@if (Model != null)
+{
+    <div class="block block-bordered block-dyk">
+        <div class="block-title">
+            Did You Know?
+        </div>
+        <div class="block-body listbox">
+            @Html.Raw(Model.Text)
+        </div>
+    </div>
+
+}
