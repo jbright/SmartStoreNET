@@ -189,6 +189,7 @@
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\CustomerRoleController.cs" />
+    <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\QuantityUnitController.cs" />
@@ -535,6 +536,7 @@
     <Content Include="Views\Import\_ColumnMappings.cshtml" />
     <Content Include="Views\Import\ProfileImportResult.cshtml" />
     <Content Include="Views\Setting\DataExchange.cshtml" />
+    <Content Include="Views\Data\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\admin.less" />
