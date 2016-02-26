@@ -235,6 +235,18 @@
     <Compile Include="Controllers\ThemeController.cs" />
     <Compile Include="Controllers\TopicController.cs" />
     <Compile Include="Controllers\WidgetController.cs" />
+    <Compile Include="DataLoad\CategoryLoader.cs" />
+    <Compile Include="DataLoad\ImageType.cs" />
+    <Compile Include="DataLoad\ItblCategoriesRepository.cs" />
+    <Compile Include="DataLoad\ItblGameImagesRepository.cs" />
+    <Compile Include="DataLoad\ItblGamesRepository.cs" />
+    <Compile Include="DataLoad\ItblRefGameEntryImagesRepository.cs" />
+    <Compile Include="DataLoad\ItemStatus.cs" />
+    <Compile Include="DataLoad\LegacyRepo.cs" />
+    <Compile Include="DataLoad\tblCategories.cs" />
+    <Compile Include="DataLoad\tblGameImages.cs" />
+    <Compile Include="DataLoad\tblGames.cs" />
+    <Compile Include="DataLoad\tblRefGameEntryImages.cs" />
     <Compile Include="Extensions\HtmlHelperExtensions.cs" />
     <Compile Include="Extensions\ScheduleTaskExtensions.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
@@ -573,6 +585,10 @@
     <ProjectReference Include="..\..\..\Libraries\SmartStore.Core\SmartStore.Core.csproj">
       <Project>{6bda8332-939f-45b7-a25e-7a797260ae59}</Project>
       <Name>SmartStore.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\SmartStore.Data\SmartStore.Data.csproj">
+      <Project>{ccd7f2c9-6a2c-4cf0-8e89-076b8fc0f144}</Project>
+      <Name>SmartStore.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Libraries\SmartStore.Services\SmartStore.Services.csproj">
       <Project>{210541ad-f659-47da-8763-16f36c5cd2f4}</Project>
