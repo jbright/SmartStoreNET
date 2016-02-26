@@ -19,6 +19,8 @@ using System.Configuration;
 using Autofac;
 using System.Text.RegularExpressions;
 using System.Net;
+using CsvHelper;
+using System.IO;
 
 /*
 
@@ -59,14 +61,14 @@ namespace Import
             //ImportDidYouKnow();
 
             //ImportReferenceGames();
-            ImportReferenceGameImages();
+            //ImportReferenceGameImages();
 
             //TestCategory();
             //SetupAttributes();
             //PrepopulateReferenceGameAttributeValues();
             //PopulateManufacturers();
             //PopulateCategories();
-            //PopulateProducts(4000);
+            PopulateProducts(4000);
             //BindProductToCategories();
 
             //SyncProducts();
@@ -360,32 +362,67 @@ namespace Import
             }
         }
 
+        private static List<SpreadSheetRow> GetProductsToImport()
+        {
+            List<SpreadSheetRow> productsToImport = new List<SpreadSheetRow>();
+            Console.Write("Fetching product csv list... ");
+            using (StreamReader textReader = File.OpenText(@"C:\Users\jbright.BEYOND1\Dropbox\QuarterArcade\test2.csv"))
+            {
+                using (var csv = new CsvReader(textReader))
+                {
+                    csv.Configuration.RegisterClassMap<SpreadSheetRowMap>();
+                    csv.Configuration.WillThrowOnMissingField = false;
+                    productsToImport.AddRange(csv.GetRecords<SpreadSheetRow>());
+                }
+            }
+            Console.WriteLine(" done!");
+            return productsToImport;
+        }
+
+        private static List<tblGames> FilterImportList(List<tblGames> allGames, List<SpreadSheetRow> productsToImport)
+        {
+            List<tblGames> gamesToImport = new List<tblGames>();
+            Console.Write("Removing all items that aren't in the master list.. ");
+            foreach (var game in allGames)
+            {
+                var g = productsToImport.Find(x => x.SKU == game.ID);
+                if (g != null)
+                    gamesToImport.Add(game);
+            }
+            Console.WriteLine("done!");
+            return gamesToImport;
+        }
 
         /// <summary>
         /// Makes updates to attributes that are missing.
         /// </summary>
         private static void SyncProducts()
         {
+            var productsToImport = GetProductsToImport();
+
             Console.Write("Fetching legacy products.. ");
             var games = LegacyRepo.GameRepo.GetAllToImport2();
             Console.WriteLine(" done!");
             Console.WriteLine("{0:#,##0} products to process.", games.Count);
 
+            var gamesToImport = FilterImportList(games, productsToImport);
+            Console.WriteLine("{0:#,##0} games to import", gamesToImport.Count);
+
             int c = 0;
-            foreach (var game in games.ToList())
+            foreach (var game in gamesToImport)
             {
                 Console.Write("{0:#,##0} Checking {1} ({2}).. ", c, game.strName, game.ID);
                 var product = Context.Set<Product>().Where(p => p.Sku == game.ID.ToString()).FirstOrDefault();
                 if (product == null)
                 {
                     Console.Write("new.. ");
-                    ImportProduct(game);
+                    ImportProduct(game, productsToImport.Find(x => x.SKU == game.ID));
                     Console.WriteLine("added.");
                 }
                 else
                 {
                     Console.Write("sync.. ");
-                    SyncProduct(game, product);
+                    SyncProduct(game, product, productsToImport.Find(x => x.SKU == game.ID));
                     Console.WriteLine("done.");
                 }
                 c++;
@@ -394,6 +431,8 @@ namespace Import
 
         private static void PopulateProducts(int quantity)
         {
+            var productsToImport = GetProductsToImport();
+
             Console.Write("Fetching legacy products... ");
             var inStockItems = LegacyRepo.GameRepo.GetAllToImport2();
             Console.WriteLine(" done!");
@@ -401,9 +440,11 @@ namespace Import
             Console.WriteLine("{0:#,##0} items with manufacturer data", 
                 inStockItems.FindAll(x => !String.IsNullOrWhiteSpace(x.strManufacturer)).Count());
 
+            var gamesToImport = FilterImportList(inStockItems, productsToImport);
+            Console.WriteLine("{0:#,##0} games to import", gamesToImport.Count);
+
             int c = 0;
-            foreach (var game in inStockItems
-                .ToList())
+            foreach (var game in gamesToImport)
             {
                 Console.Write("{2:#,##0} Processing {0} {1} ... ", game.strName, game.ID, c);
 
@@ -415,17 +456,17 @@ namespace Import
                 else
                 {
                     c++;
-                    ImportProduct(game);
+                    ImportProduct(game, productsToImport.Find(x => x.SKU == game.ID));
                 }
 
                 if (c > quantity) return;
             }
         }
 
-        private static void ImportProduct(tblGames game)
+        private static void ImportProduct(tblGames game, SpreadSheetRow row)
         {
             var product = new Product();
-            UpdateProduct(game, product);
+            UpdateProduct(game, product, row);
             Context.Set<Product>().Add(product);
             Context.SaveChanges();
 
@@ -480,13 +521,13 @@ namespace Import
             // Console.WriteLine(" slug: {0} -- done!", s);
         }
 
-        private static void SyncProduct(tblGames game, Product product)
+        private static void SyncProduct(tblGames game, Product product, SpreadSheetRow row)
         {
-            UpdateProduct(game, product);
+            UpdateProduct(game, product, row);
             Context.SaveChanges();
         }
 
-        private static void UpdateProduct(tblGames game, Product product)
+        private static void UpdateProduct(tblGames game, Product product, SpreadSheetRow row)
         {
             // Unpublish invalid ones.
             bool publish = true;
@@ -524,6 +565,8 @@ namespace Import
             product.AdminComment = game.strLocation;
             product.DisplayStockQuantity = false;
             product.Price = game.mSellPrice;
+            product.Weight = row.Weight;
+            product.AdditionalShippingCharge = row.AdditionalShipPrice;
             product.IsShipEnabled = true;
             product.TaxCategoryId = 1;
             product.ProductCost = game.mPricePaid;

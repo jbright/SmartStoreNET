@@ -39,6 +39,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="CsvHelper">
+      <HintPath>..\packages\CsvHelper.2.13.5.0\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -73,6 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceGame.cs" />
     <Compile Include="ReferenceGameRepo.cs" />
+    <Compile Include="SpreadSheetRow.cs" />
     <Compile Include="tblCategories.cs" />
     <Compile Include="tblDidYouKnow.cs" />
     <Compile Include="tblGames.cs" />
