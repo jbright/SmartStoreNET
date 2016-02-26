@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Import Data Homepage";
+}
+
+<h2>Import Data</h2>
+<table class="table">
+    <tr valign="top">
+        <td style="width: 200px;">
+            <ul>
+                <li>
+                    <form id="form-picture-import">
+                        <input id="picture-item-id" type="text" placeholder="item id" />
+                        <a class="btn" href="#" id="form-picture-process" data-url="@Url.Action("import-pictures")">Import pictures</a>
+                    </form>
+                </li>
+                <li>
+                    <form id="form-pictures-import">
+                        <input id="pictures-count" type="text" placeholder="# to import" />
+                        <a class="btn" href="#" id="form-pictures-process" data-url="@Url.Action("get-item-list")">Process Items</a>
+                    </form>
+
+                </li>
+                <li>
+                    <a href="#" id="get-all-categories" data-url="@Url.Action("get-all-categories")">Get All Categories</a>
+                </li>
+                <li id="cat-img" data-url="@Url.Action("import-category-pictures")">
+                    <a href="#" id="get-all-category-images" data-url="@Url.Action("get-all-category-ids")">Get Category Images</a>
+                </li>
+
+            </ul>
+        </td>
+        <td>
+<pre id="status">Stats will appear here when it's available.
+
+@{
+    var Context = new SmartStore.Data.SmartObjectContext("EC");
+    var attribute = Context.Set<SmartStore.Core.Domain.Catalog.SpecificationAttribute>().Where(a => a.Name == "Image Processed").FirstOrDefault();
+    var option = Context
+        .Set<SmartStore.Core.Domain.Catalog.SpecificationAttributeOption>()
+        .Where(o => o.SpecificationAttributeId == attribute.Id && o.Name == false.ToString())
+        .FirstOrDefault();
+
+    var toProcess = Context
+        .Set<SmartStore.Core.Domain.Catalog.ProductSpecificationAttribute>()
+        .Where(p => p.SpecificationAttributeOptionId == option.Id);
+  
+}
+Attribute Id: @attribute.Id
+Attribute Name: @attribute.Name
+Option Id: @option.Id
+Option Name: @option.Name
+Total Count: @toProcess.Count();
+</pre>
+        </td>
+        <td style="width:100px;">
+<pre id="process-ids"></pre>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(function () {
+
+        $('#get-all-categories').click(function (e) {
+            e.preventDefault();
+            $("#status").html("");
+            $.post($(this).data('url'), {
+                count: $('#pictures-count').val()
+            }, function (results) {
+                $.each(results, function (index, value) {
+                    $("#status").append("<div>" + value + "</div>");
+                });
+            });
+        });
+
+        
+        $('#get-all-category-images').click(function (e) {
+            e.preventDefault();
+            $.post($(this).data('url'), {
+            }, function (results) {
+                $("#process-ids").html('Products: <br />');
+                $.each(results, function (index, value) {
+                    $("#process-ids").append("<div id='pid_" + value + "'>" + value + "</div>");
+                });
+
+                $.each(results, function (index, value) {
+
+                    $.post($('#cat-img').data('url'), {
+                        id: value
+                    }, function (results) {
+                        $("#status").append(results);
+                        $("#status").append("<br />");
+                        $("#pid_" + value).html(value + " DONE!");
+                    }
+                    );
+                });
+
+            }
+            );
+        });
+
+        $('#form-pictures-process').click(function (e) {
+            e.preventDefault();
+            $.post($(this).data('url'), {
+                count: $('#pictures-count').val()
+            }, function (results) {
+                $("#process-ids").html('Products: <br />');
+                $.each(results, function (index, value) {
+                    $("#process-ids").append("<div id='pid_" + value + "'>" + value + "</div>");
+                });
+
+                $.each(results, function (index, value) {
+
+                    $.post($('#form-picture-process').data('url'), {
+                        id: value
+                    }, function (results) {
+                        $("#status").append(results);
+                        $("#status").append("<br />");
+                        $("#pid_" + value).html(value + " DONE!");
+                    }
+                    );
+                });
+
+            }
+            );
+        });
+
+        $('#form-picture-process').click(function (e) {
+            e.preventDefault();
+            $.post($(this).data('url'), {
+                    id: $('#picture-item-id').val()
+            }, function (results) {
+                $("#status").html(results);
+            }
+            );
+        });
+
+        $("#import-categories").click(function (e) {
+            e.preventDefault();
+
+            $('#status').data('url', $(this).data('progress'));
+
+            $.post($(this).data('source'), {}, function (taskId) {
+                //$("#status").html(taskId);
+
+                
+                // Init monitors
+                $("#status").html("Started....");
+                $('#status').data('pid', taskId);
+
+                // Periodically update monitors
+                var intervalId = setInterval(function () {
+                    $.post($('#status').data('url'), { id: taskId }, function (stat) {
+                        $("#status").html(stat);
+                    });
+                }, 5000);
+                
+            });
+
+            return false;
+        });
+    });
+</script>
