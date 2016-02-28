@@ -34,6 +34,8 @@ delete from Product;
 delete from Manufacturer;
 delete from UrlRecord where EntityName='Category';
 delete from UrlRecord where EntityName='Product';
+delete from UrlRecord where EntityName='Manufacturer';
+
 
 
  
@@ -57,19 +59,21 @@ namespace Import
         static void Main(string[] args)
         {
             Context = new SmartObjectContext("EC");
+            //TestCategory();
 
+            // Already did -- don't need to do again.
             //ImportDidYouKnow();
 
+            // Already did -- don't need to do again.
             //ImportReferenceGames();
             //ImportReferenceGameImages();
 
-            //TestCategory();
-            //SetupAttributes();
-            //PrepopulateReferenceGameAttributeValues();
-            //PopulateManufacturers();
-            //PopulateCategories();
-            PopulateProducts(4000);
-            //BindProductToCategories();
+            SetupAttributes();
+            PrepopulateReferenceGameAttributeValues();
+            PopulateManufacturers();
+            PopulateCategories();
+            PopulateProducts(10000);
+            BindProductToCategories();
 
             //SyncProducts();
 
@@ -366,7 +370,7 @@ namespace Import
         {
             List<SpreadSheetRow> productsToImport = new List<SpreadSheetRow>();
             Console.Write("Fetching product csv list... ");
-            using (StreamReader textReader = File.OpenText(@"C:\Users\jbright.BEYOND1\Dropbox\QuarterArcade\test2.csv"))
+            using (StreamReader textReader = File.OpenText(@"C:\quarterarcade.com\part1.csv"))
             {
                 using (var csv = new CsvReader(textReader))
                 {
@@ -556,7 +560,8 @@ namespace Import
             product.ProductType = ProductType.SimpleProduct;
             product.ProductTemplateId = 1;                          // HARD CODED
             product.MetaDescription = game.strShortDescription;
-            product.MetaTitle = String.Format("{0} for sale at QuarterArcade.com", game.strName);
+            //product.MetaTitle = String.Format("{0} for sale at QuarterArcade.com", game.strName);
+            product.MetaTitle = row.SeoTitle;
             product.ShortDescription = game.strShortDescription;
             product.FullDescription = description;
             product.CreatedOnUtc = game.dtCreated;
@@ -691,6 +696,7 @@ namespace Import
                         CategoryTemplateId = 1,
                         DefaultViewMode = "grid",
                         MetaKeywords = category.CatID,          // Just to key off of.
+                        MetaTitle = "Classic " + category.strName + " for sale",
                     };
 
                     Context.Set<Category>().Add(c);
@@ -787,6 +793,7 @@ namespace Import
                                 CategoryTemplateId = 1,
                                 DefaultViewMode = "grid",
                                 MetaKeywords = legacyChild.CatID,          // Just to key off of.
+                                MetaTitle = "Classic " + legacyChild.strName + " for sale",
                             };
 
                             Context.Set<Category>().Add(newChild);

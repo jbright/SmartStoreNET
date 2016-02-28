@@ -14,6 +14,8 @@ namespace Import
         public decimal Weight { get; set; }
 
         public decimal AdditionalShipPrice { get; set;  }
+
+        public string SeoTitle { get; set; }
     }
 
     /// <summary>
@@ -26,6 +28,7 @@ namespace Import
             Map(m => m.SKU).Name("SKU");
             Map(m => m.Weight).Name("Weight");
             Map(m => m.AdditionalShipPrice).Name("Additional Ship Price");
+            Map(m => m.SeoTitle).Name("SEO Title");
         }
     }
 }
