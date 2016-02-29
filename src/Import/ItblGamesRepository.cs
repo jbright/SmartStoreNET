@@ -40,6 +40,14 @@ namespace Import
             ")]
         List<tblGames> GetAllToImport2();
 
+        [Sql(@"SELECT g.*, e.strClass, e.strSubClass, e.nYear, e.strManufacturer, rg.strName AS 'RefGameName' 
+            FROM tblGames g
+	            LEFT JOIN tblRefGameEntry e ON e.ID=g.refRefGameEntryId
+	            LEFT JOIN tblRefGame rg ON rg.ID=e.refRefGameID
+            WHERE dtUpdated > '2010-01-01'
+            ")]
+        List<tblGames> GetAllToImport3();
+
         [Sql(@"SELECT DISTINCT e.strManufacturer
             FROM tblGames g
 	            LEFT JOIN tblRefGameEntry e ON e.ID=g.refRefGameEntryId

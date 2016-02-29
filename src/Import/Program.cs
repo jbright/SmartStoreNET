@@ -69,11 +69,11 @@ namespace Import
             //ImportReferenceGameImages();
 
             SetupAttributes();
-            PrepopulateReferenceGameAttributeValues();
-            PopulateManufacturers();
-            PopulateCategories();
+            //PrepopulateReferenceGameAttributeValues();
+            //PopulateManufacturers();
+            //PopulateCategories();
             PopulateProducts(10000);
-            BindProductToCategories();
+            //BindProductToCategories();
 
             //SyncProducts();
 
@@ -370,7 +370,7 @@ namespace Import
         {
             List<SpreadSheetRow> productsToImport = new List<SpreadSheetRow>();
             Console.Write("Fetching product csv list... ");
-            using (StreamReader textReader = File.OpenText(@"C:\quarterarcade.com\part1.csv"))
+            using (StreamReader textReader = File.OpenText(@"C:\quarterarcade.com\part3.csv"))
             {
                 using (var csv = new CsvReader(textReader))
                 {
@@ -438,11 +438,11 @@ namespace Import
             var productsToImport = GetProductsToImport();
 
             Console.Write("Fetching legacy products... ");
-            var inStockItems = LegacyRepo.GameRepo.GetAllToImport2();
+            var inStockItems = LegacyRepo.GameRepo.GetAllToImport3();
             Console.WriteLine(" done!");
 
-            Console.WriteLine("{0:#,##0} items with manufacturer data", 
-                inStockItems.FindAll(x => !String.IsNullOrWhiteSpace(x.strManufacturer)).Count());
+//            Console.WriteLine("{0:#,##0} items with manufacturer data", 
+//                inStockItems.FindAll(x => !String.IsNullOrWhiteSpace(x.strManufacturer)).Count());
 
             var gamesToImport = FilterImportList(inStockItems, productsToImport);
             Console.WriteLine("{0:#,##0} games to import", gamesToImport.Count);
@@ -523,6 +523,7 @@ namespace Import
             }
 
             // Console.WriteLine(" slug: {0} -- done!", s);
+            Console.WriteLine(" slug: {0} -- done!", s);
         }
 
         private static void SyncProduct(tblGames game, Product product, SpreadSheetRow row)
