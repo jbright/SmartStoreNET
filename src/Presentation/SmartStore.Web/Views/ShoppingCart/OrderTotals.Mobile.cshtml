@@ -32,7 +32,7 @@
                         @T("ShoppingCart.Totals.Shipping")
                         @if (Model.RequiresShipping && !String.IsNullOrEmpty(Model.SelectedShippingMethod))
                         {
-                            @String.Format("({0})", Model.SelectedShippingMethod)
+                            @Html.Raw(String.Format("({0})", HttpUtility.HtmlDecode(Model.SelectedShippingMethod)))
                         }
                         :</strong>
                 </td>

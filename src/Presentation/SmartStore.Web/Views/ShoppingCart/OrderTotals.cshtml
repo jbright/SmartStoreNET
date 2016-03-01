@@ -52,7 +52,7 @@
                         @if (Model.RequiresShipping && !String.IsNullOrEmpty(Model.SelectedShippingMethod))
                         {
                             <span class="selected-shipping-method muted">
-                                @String.Format("({0})", Model.SelectedShippingMethod)
+                                @Html.Raw(String.Format("({0})", HttpUtility.HtmlDecode(Model.SelectedShippingMethod)))
                             </span>
                         }
                 </td>
