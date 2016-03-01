@@ -303,6 +303,160 @@ namespace SmartStore.Admin.Controllers
             return Json("Could not find item: " + id.ToString());
         }
 
+        [ActionName("import-pictures2")]
+        public ActionResult ImportPictures2(int id)
+        {
+            // return Json("OK");
+
+            var product = _productService.GetProductById(id);
+            StringBuilder sb = new StringBuilder();
+
+            if (product != null)
+            {
+                sb.AppendFormat("Successfully loaded item {0} with Id {1}", product.Name, product.Id);
+                sb.AppendLine();
+
+                var legacyGame = LegacyRepo.GameRepo.GetById(Int32.Parse(product.Sku));
+                if (legacyGame != null)
+                {
+                    sb.AppendFormat("Legacy game found with Id {0}", legacyGame.ID);
+                    sb.AppendLine();
+                    if (legacyGame.refRefGameEntryID > 0)
+                    {
+                        #region Check for part type
+                        if (legacyGame.strPartType == "Marquee" || legacyGame.strPartType == "Board" || legacyGame.strPartType == "Manual")
+                        {
+                            #region sample image check.
+                            var sampleImages = LegacyRepo.ReferenceImagesRepo.GetSampleImagesForGame(legacyGame.ID);
+                            if (sampleImages == null || sampleImages.Count == 0)
+                            {
+                                sb.AppendLine("   Potential sample images to port over.");
+                                string cat = string.Empty;
+                                if (legacyGame.strPartType == "Marquee")
+                                    cat = "FS:Marquee";
+                                else if (legacyGame.strPartType == "Board")
+                                    cat = "FS:PCB";
+                                else if (legacyGame.strPartType == "Manual")
+                                    cat = "FS:Manual";
+
+                                #region processing generic list.
+                                var generics = LegacyRepo.ReferenceImagesRepo.GetGenericSampleImagesForGame(legacyGame.refRefGameEntryID, cat);
+                                if (generics != null && generics.Count > 0)
+                                {
+                                    sb.AppendFormat("Found {0} generics(s)", generics.Count);
+                                    sb.AppendLine();
+                                    generics.ForEach(img =>
+                                    {
+                                        string burl = img.strUrl.Replace("_th_", "_fs_");
+                                        sb.AppendLine("  image: " + burl);
+
+                                        // http://ggdb.com/img/ggdb/vol1/1827_1_fs_pb.jpg
+                                        string remoteImageUrl = "http://ggdb.com" + burl;
+                                        string localName = Guid.NewGuid().ToString().Replace("-", "");
+                                        string localFileName = localName + Path.GetExtension(remoteImageUrl);
+                                        // hack to fix missing image files.
+                                        if (!localFileName.EndsWith(".jpg"))
+                                            localFileName = localFileName + ".jpg";
+
+                                        WebClient webClient = new WebClient();
+                                        string fullPath = Server.MapPath("~/Staging/") + localFileName;
+                                        webClient.DownloadFile(remoteImageUrl, fullPath);
+
+                                        sb.AppendLine("  downloaded to : " + localName);
+
+                                        #region try/catch
+                                        try
+                                        {
+                                            string fileExtension = Path.GetExtension(remoteImageUrl);
+                                            if (String.IsNullOrWhiteSpace(fileExtension))
+                                                fileExtension = ".jpg";
+
+                                            var picture = _pictureService.InsertPicture(System.IO.File.ReadAllBytes(fullPath), ContentType(fileExtension), null, true, false);
+                                            sb.AppendLine("  picture record with Id : " + picture.Id);
+
+                                            var productPicture = new ProductPicture
+                                            {
+                                                PictureId = picture.Id,
+                                                ProductId = product.Id,
+                                            };
+
+                                            MediaHelper.UpdatePictureTransientStateFor(productPicture, pp => pp.PictureId);
+
+                                            _productService.InsertProductPicture(productPicture);
+
+                                            _pictureService.SetSeoFilename(picture.Id, _pictureService.GetPictureSeName(product.Name));
+
+                                            System.IO.File.Delete(fullPath);
+                                            Console.WriteLine("  picture associated with product!");
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            sb.AppendLine("  PICTURE COULD NOT BE PROCESSED!!");
+                                            sb.AppendLine(ex.ToString());
+                                        }
+                                        #endregion
+                                    });
+
+                                }
+                                else
+                                {
+                                    sb.AppendLine("   No generic sample images to use.");
+                                }
+                                #endregion
+                            }
+                            else
+                            {
+                                sb.AppendLine("   Already had specific sample images. Skipping.");
+                            }
+                            #endregion
+                        }
+                        else
+                        {
+                            sb.AppendLine("   no sample images to port over.");
+                        }
+                        #endregion
+                    }
+                    else
+                    {
+                        sb.AppendLine("   no referenec game.");
+                    }
+
+
+                    // product.MetaTitle = "IMAGES PROCESSED";
+
+                    var Context = new SmartObjectContext("EC");
+
+                    var attribute = Context.Set<SpecificationAttribute>().Where(a => a.Name == "Image Processed").FirstOrDefault();
+                    var falseOption = Context
+                        .Set<SpecificationAttributeOption>()
+                        .Where(o => o.SpecificationAttributeId == attribute.Id && o.Name == false.ToString())
+                        .FirstOrDefault();
+                    var trueOption = Context
+                        .Set<SpecificationAttributeOption>()
+                        .Where(o => o.SpecificationAttributeId == attribute.Id && o.Name == true.ToString())
+                        .FirstOrDefault();
+                    var productAttribute = Context.Set<ProductSpecificationAttribute>()
+                        .Where(a => a.ProductId == product.Id && a.SpecificationAttributeOptionId == falseOption.Id)
+                        .FirstOrDefault();
+                    if (productAttribute != null)
+                    {
+                        productAttribute.SpecificationAttributeOptionId = trueOption.Id;
+                        Context.Set<SpecificationAttributeOption>();
+                        Context.SaveChanges();
+                    }
+
+                    _productService.UpdateProduct(product, false);
+                }
+                else
+                    sb.AppendLine("Legacy Game not found!");
+
+                return Json(sb.ToString());
+            }
+            return Json("Could not find item: " + id.ToString());
+        }
+
+
         public string ContentType(string extension)
         {
             var contentType = MimeTypes.MapNameToMimeType(extension);

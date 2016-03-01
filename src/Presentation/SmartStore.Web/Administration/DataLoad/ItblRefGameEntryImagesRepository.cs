@@ -14,5 +14,8 @@ namespace SmartStore.Admin.DataLoad
 
         [Sql("SELECT  img.* FROM [tblGameSampleImages] sample_images JOIN [tblRefGameEntryImages] img ON img.ID=sample_images.[refRefGameEntryImagesID] WHERE sample_images.refGamesId=@id")]
         List<tblRefGameEntryImages> GetSampleImagesForGame(int id);
+
+        [Sql("SELECT * FROM tblRefGameEntryImages WHERE refRefGameEntryID=@refRefGameEntryID AND strImageType Like @name ORDER BY nOrder")]
+        List<tblRefGameEntryImages> GetGenericSampleImagesForGame(int refRefGameEntryID, string name);
     }
 }
