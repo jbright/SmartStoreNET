@@ -1400,7 +1400,8 @@ namespace SmartStore.Web.Controllers
 
 				if (addShippingPrice > 0 && displayPrices)
 				{
-					model.TransportSurcharge = res["Common.AdditionalShippingSurcharge"].Text.FormatWith(_priceFormatter.FormatPrice(addShippingPrice, true, false));
+                    // We don't want to show this.
+					// model.TransportSurcharge = res["Common.AdditionalShippingSurcharge"].Text.FormatWith(_priceFormatter.FormatPrice(addShippingPrice, true, false));
 				}
 
 				if (contextProduct.Weight > 0)
