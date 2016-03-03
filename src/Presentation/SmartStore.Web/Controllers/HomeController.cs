@@ -147,7 +147,7 @@ namespace SmartStore.Web.Controllers
 				string fromName = null;
 				string body = Core.Html.HtmlUtils.FormatText(model.Enquiry, false, true, false, false, false, false);
 				//required for some SMTP servers
-				if (_commonSettings.Value.UseSystemEmailForContactUsForm)
+				if (true || _commonSettings.Value.UseSystemEmailForContactUsForm)
 				{
 					from = emailAccount.Email;
 					fromName = emailAccount.DisplayName;
@@ -164,8 +164,10 @@ namespace SmartStore.Web.Controllers
 				{
 					From = from,
 					FromName = fromName,
-					To = emailAccount.Email,
-					ToName = emailAccount.DisplayName,
+					// To = emailAccount.Email,
+					// ToName = emailAccount.DisplayName,
+                    To = "sales@quarterarcade.com",
+                    ToName = "Sales",
 					Priority = 5,
 					Subject = subject,
 					Body = body,

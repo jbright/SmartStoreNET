@@ -1195,7 +1195,7 @@
                 @Html.SmartLabelFor(model => model.ShippingMethod)
             </td>
             <td class="adminData">
-                @Model.ShippingMethod
+                @Html.Raw(HttpUtility.HtmlDecode(Model.ShippingMethod))
             </td>
         </tr>
         <tr>

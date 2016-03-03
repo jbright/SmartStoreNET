@@ -334,7 +334,7 @@
                                         <strong>@T("Order.ShippingMethod"):</strong>
                                     </div>
                                     <div class="shipping-method-value">
-                                        @Model.ShippingMethod
+                                        @Html.Raw(HttpUtility.HtmlDecode(Model.ShippingMethod))
                                     </div>
                                 </p>
                             </td>
