@@ -1,0 +1,15 @@
+﻿@model SmartStore.Admin.Controllers.DidYouKnow
+@using Telerik.Web.Mvc.UI;
+@{
+    var cultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).ToList();
+}
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="Quote">Quote</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Text)
+        </td>
+    </tr>
+</table>

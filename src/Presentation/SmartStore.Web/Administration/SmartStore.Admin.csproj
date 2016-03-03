@@ -190,6 +190,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\CustomerRoleController.cs" />
     <Compile Include="Controllers\DataController.cs" />
+    <Compile Include="Controllers\DidYouKnowController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\QuantityUnitController.cs" />
@@ -549,6 +550,10 @@
     <Content Include="Views\Import\ProfileImportResult.cshtml" />
     <Content Include="Views\Setting\DataExchange.cshtml" />
     <Content Include="Views\Data\Index.cshtml" />
+    <Content Include="Views\DidYouKnow\Create.cshtml" />
+    <Content Include="Views\DidYouKnow\Edit.cshtml" />
+    <Content Include="Views\DidYouKnow\List.cshtml" />
+    <Content Include="Views\DidYouKnow\_CreateOrUpdate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\admin.less" />

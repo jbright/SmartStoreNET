@@ -1,0 +1,34 @@
+﻿@model Telerik.Web.Mvc.GridModel<SmartStore.Admin.Controllers.DidYouKnow>
+@using Telerik.Web.Mvc.UI
+@{
+    //page title
+    ViewBag.Title = "Did You Know";
+}
+<div class="section-header">
+    <div class="title">
+		<i class="fa fa-clock-o"></i>
+        Did You Known
+    </div>
+    <div class="options">
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fa fa-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+<table class="adminContent">
+    <tr>
+        <td>
+            @(Html.Telerik().Grid<SmartStore.Admin.Controllers.DidYouKnow>()
+                    .Name("delivery-times-grid")
+                    .BindTo(Model.Data)
+                    .Columns(columns =>
+                    {
+                        columns.Bound(x => x.Text)
+                            .Template(x => Html.ActionLink(x.Text, "Edit", new { id = x.Id }))
+                            .ClientTemplate("<a href='Edit/<#= Id #>'><#= Name #></a>");
+                    })     
+               )
+        </td>
+    </tr>
+</table>
