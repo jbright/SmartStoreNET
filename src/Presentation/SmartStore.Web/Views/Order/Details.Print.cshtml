@@ -101,7 +101,7 @@
 						</tr>
 						<tr>
 							<td class="label">@T("Order.ShippingMethod"):</td>
-							<td class="value">@order.ShippingMethod</td>
+							<td class="value">@Html.Raw(HttpUtility.HtmlDecode(order.ShippingMethod))</td>
 						</tr>
 					</table>
 					@Html.Widget("invoice_orderinfotable_after", order)
@@ -280,6 +280,12 @@
 					@Html.Raw(item.AttributeInfo)
 				</div>
 			}
+            @if (!String.IsNullOrEmpty(item.Description))
+            {
+                <div class="attributes text-small">
+                    @item.Description
+                </div>
+            }
 		</td>
 		@if (showSku)
 		{

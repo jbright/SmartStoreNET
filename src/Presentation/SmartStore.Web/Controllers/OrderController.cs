@@ -451,10 +451,25 @@ namespace SmartStore.Web.Controllers
 
 			orderItem.Product.MergeWithCombination(orderItem.AttributesXml);
 
+            string desc = string.Empty;
+            if (!String.IsNullOrWhiteSpace(orderItem.Product.ShortDescription))
+            {
+                desc = System.Text.RegularExpressions.Regex.Replace(orderItem.Product.ShortDescription, @"<[^>]+>|&nbsp;", "").Trim();
+                if (desc.Length > 150)
+                    desc = desc.Substring(0, 150) + "...";
+            }
+            else if (!String.IsNullOrWhiteSpace(orderItem.Product.FullDescription))
+            {
+                desc = System.Text.RegularExpressions.Regex.Replace(orderItem.Product.FullDescription, @"<[^>]+>|&nbsp;", "").Trim();
+                if (desc.Length > 150)
+                    desc = desc.Substring(0, 150) + "...";
+            }
+
 			var model = new OrderDetailsModel.OrderItemModel
 			{
 				Id = orderItem.Id,
 				Sku = orderItem.Product.Sku,
+                Description = desc,
 				ProductId = orderItem.Product.Id,
 				ProductName = orderItem.Product.GetLocalized(x => x.Name),
 				ProductSeName = orderItem.Product.GetSeName(),

@@ -53,6 +53,10 @@ namespace Import
 
         private static SpecificationAttribute BoardTypeAttribute;
 
+
+        private static SpecificationAttribute GameYearAttribute;
+        private static SpecificationAttribute GameGenreAttribute;
+
         private static SpecificationAttribute ConditionAttribute;
         private static List<SpecificationAttributeOption> Conditions = new List<SpecificationAttributeOption>();
 
@@ -69,10 +73,11 @@ namespace Import
             //ImportReferenceGameImages();
 
             SetupAttributes();
+            PopulateNewAttributes();
             //PrepopulateReferenceGameAttributeValues();
             //PopulateManufacturers();
             //PopulateCategories();
-            PopulateProducts(10000);
+            //PopulateProducts(10000);
             //BindProductToCategories();
 
             //SyncProducts();
@@ -163,6 +168,37 @@ namespace Import
             AddOrFindValue(WorkingAttribute, "Not Working");
             AddOrFindValue(WorkingAttribute, "Working");
 
+            GameYearAttribute = SetupSpecificationAttributes("Year");
+            for (int year = 1900; year <= 2020; year++)
+                Conditions.Add(AddOrFindValue(GameYearAttribute, year.ToString()));
+
+            GameGenreAttribute = SetupSpecificationAttributes("Genre");
+            
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Simulator"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Fighting"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "System"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Role Playing Game"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Card"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Shooter"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Other"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Labyrinth/Maze"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Boardgame"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Mahjong"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Gambling"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Puzzle"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Ball and Paddle"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Platform"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Trivia"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Scrolling Shooter"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Space"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Pinball"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Scrolling Fighter"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Billiards/Pool"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Racing"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Skill"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Adventure"));
+            Conditions.Add(AddOrFindValue(GameGenreAttribute, "Sports"));
+
         }
 
         private static void PrepopulateReferenceGameAttributeValues()
@@ -228,6 +264,32 @@ namespace Import
                         else
                         {
                             Console.WriteLine(" Ignored {0}", referenceGame.Name);
+                        }
+                    }
+                });
+        }
+
+        private static void PopulateNewAttributes()
+        {
+            var repo = ((new SqlConnection(ConfigurationManager.ConnectionStrings["EC"].ConnectionString)).As<ReferenceGameRepository>());
+            var allItems = Context.Set<Product>().ToList();
+            //var allProductSpecificationAttributes = Context.Set<ProductSpecificationAttribute>().ToList();
+            //var allSpecificationOptions = Context.Set<SpecificationAttributeOption>().ToList();
+
+            allItems.ForEach(product =>
+                {
+                    var option = repo.GetProductOption(LegacyReferenceGameAttribute.Id, product.Id);
+                    if (option != null && !String.IsNullOrWhiteSpace(option.Name))
+                    {
+                        var game = repo.GetByName(option.Name);
+                        if (game != null)
+                        {
+                            Console.Write("Updating {0} ... ", product.Name);
+                            if (game.Year > 0)
+                                AddAttributeAssociation(product, GameYearAttribute, game.Year.ToString(), true, true);
+                            if (!String.IsNullOrWhiteSpace(game.Genre))
+                                AddAttributeAssociation(product, GameGenreAttribute, game.Genre, true, true);
+                            Console.WriteLine("done!");
                         }
                     }
                 });
@@ -304,6 +366,8 @@ namespace Import
             Context.Set<ProductSpecificationAttribute>().Add(assoc);
             Context.SaveChanges();
         }
+
+        
 
         private static void AddAttributeAssociation(Product product, SpecificationAttribute ConditionAttribute, SpecificationAttributeOption specificationAttributeOption, bool allowFiltering = false, bool showOnProductPage = false)
         {

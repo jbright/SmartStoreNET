@@ -101,4 +101,17 @@ namespace Import
         [Sql(@"INSERT INTO QA_ReferenceGamePicture (ReferenceGameId, Path, Description, Width, Height) VALUES (@ReferenceGameId, @Path, @Description, @Width, @Height)")]
         void AddReferencePicture(int ReferenceGameId, string Path, string Description, int Width, int Height);
     }
+
+    public interface ReferenceGameRepository
+    {
+        [Sql("SELECT * FROM QA_ReferenceGame WHERE Name=@name")]
+        ReferenceGame GetByName(string name);
+
+        [Sql(@"
+            select m.ProductId, o.* 
+            from [dbo].[SpecificationAttributeOption] o 
+                join Product_SpecificationAttribute_Mapping m ON m.SpecificationAttributeOptionId=o.Id
+            where o.[SpecificationAttributeId]=@attributeId and m.ProductId=@productId")]
+        SmartStore.Core.Domain.Catalog.SpecificationAttributeOption GetProductOption(int attributeId, int productId);
+    }
 }
