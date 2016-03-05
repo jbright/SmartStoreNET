@@ -29,3 +29,41 @@
 
     <li>@Model.ProductName</li>
 </ul>
+<script type="application/ld+json">
+{
+    "@@context": "http://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [{
+    "@@type": "ListItem",
+    "position": 1,
+    "item": {
+        "@@id": "http://quarterarcade.com",
+        "name": "Catalog"
+    }
+    },
+    @for (int i = 0; i < Model.CategoryBreadcrumb.Count; i++) {
+        var menuItem = Model.CategoryBreadcrumb[i];
+        <text>
+            {
+            "@@type": "ListItem",
+            "position": @(i+2),
+            "item": {
+                "@@id": "@menuItem.GenerateUrl(this.Url)",
+                "name": "@menuItem.Text"
+            }
+        },
+        </text>
+        }
+        {
+        "@@type": "ListItem",
+        "position": @(Model.CategoryBreadcrumb.Count),
+        "item": {
+            "@@id": "@Url.RouteUrl("Product", new { SeName = Model.ProductSeName })",
+            "name": "@Model.ProductName"
+            }
+        }
+    ]
+}
+</script>
+@Html.Widget("categorydetails_after_breadcrumb")
+}

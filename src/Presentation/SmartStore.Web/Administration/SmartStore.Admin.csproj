@@ -223,6 +223,7 @@
     <Compile Include="Controllers\ProductReviewController.cs" />
     <Compile Include="Controllers\QueuedEmailController.cs" />
     <Compile Include="Controllers\RecurringPaymentController.cs" />
+    <Compile Include="Controllers\ReferenceGamesController.cs" />
     <Compile Include="Controllers\ReturnRequestController.cs" />
     <Compile Include="Controllers\ScheduleTaskController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
@@ -293,6 +294,8 @@
     <Compile Include="Models\Plugins\LicensePluginModel.cs" />
     <Compile Include="Models\Plugins\LocalPluginsModel.cs" />
     <Compile Include="Models\Plugins\ProviderModelList.cs" />
+    <Compile Include="Models\ReferenceGames\ReferenceGame.cs" />
+    <Compile Include="Models\ReferenceGames\ReferenceGamesListModel.cs" />
     <Compile Include="Models\Settings\DataExchangeSettingsModel.cs" />
     <Compile Include="Models\UrlRecord\UrlRecordListModel.cs" />
     <Compile Include="Models\UrlRecord\UrlRecordModel.cs" />
@@ -554,6 +557,10 @@
     <Content Include="Views\DidYouKnow\Edit.cshtml" />
     <Content Include="Views\DidYouKnow\List.cshtml" />
     <Content Include="Views\DidYouKnow\_CreateOrUpdate.cshtml" />
+    <Content Include="Views\ReferenceGames\List.cshtml" />
+    <Content Include="Views\ReferenceGames\Create.cshtml" />
+    <Content Include="Views\ReferenceGames\Edit.cshtml" />
+    <Content Include="Views\ReferenceGames\_CreateOrUpdate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\admin.less" />

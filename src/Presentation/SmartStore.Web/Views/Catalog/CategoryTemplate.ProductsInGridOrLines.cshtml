@@ -79,6 +79,49 @@
                 </li>
 			}
         </ul>
+        <script type="application/ld+json">
+        {
+          "@@context": "http://schema.org",
+          "@@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@@id": "http://quarterarcade.com",
+              "name": "Catalog"
+            }
+          },
+          @for (int i = 0; i < Model.CategoryBreadcrumb.Count; i++) {
+              var menuItem = Model.CategoryBreadcrumb[i];
+              var isLastCategory = menuItem.EntityId == Model.Id;
+              if (isLastCategory) {
+              <text>
+                    {
+                    "@@type": "ListItem",
+                    "position": @(i+2),
+                    "item": {
+                        "@@id": "@menuItem.GenerateUrl(this.Url)",
+                        "name": "@menuItem.Text"
+                    }
+                }
+              </text>
+              }
+              else { 
+              <text>
+                    {
+                    "@@type": "ListItem",
+                    "position": @(i+2),
+                    "item": {
+                        "@@id": "@menuItem.GenerateUrl(this.Url)",
+                        "name": "@menuItem.Text"
+                    }
+                },
+              </text>
+              }
+          }
+          ]
+        }
+        </script>
         @Html.Widget("categorydetails_after_breadcrumb")
 	}
 

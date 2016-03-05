@@ -192,7 +192,7 @@
 						<a class="change-checkout-data pull-right" href='@Url.Action("ShippingMethod", "Checkout")'>@T("Common.Change")</a>
                     </div>
                     <div class="block-body">
-                        @Model.ShippingMethod
+                        @Html.Raw(HttpUtility.HtmlDecode(Model.ShippingMethod))
                     </div>
                 </div>
             </div>

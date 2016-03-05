@@ -36,6 +36,11 @@ namespace SmartStore.Web.Controllers
             return RedirectPermanent("/");
         }
 
+        public ActionResult Newest()
+        {
+            return RedirectPermanent("/newproducts");
+        }
+
         // GET: Redirector
         public ActionResult Product(int id)
         {

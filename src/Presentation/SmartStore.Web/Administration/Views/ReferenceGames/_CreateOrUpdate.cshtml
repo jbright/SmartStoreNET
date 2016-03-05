@@ -1,0 +1,112 @@
+﻿@model SmartStore.Admin.Models.ReferenceGames.ReferenceGame
+@using Telerik.Web.Mvc.UI;
+@{
+    var cultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).ToList();
+}
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="Name">Name</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Name)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="Genre">Genre</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Genre)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="Description">Description</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Description)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="Year">Year</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Year)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="Manufacturer">Manufacturer</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Manufacturer)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="AdditionalDescription">Additional Description</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.AdditionalDescription)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="MonitorSync">Monitor Sync</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MonitorSync)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="MonitorComposite">Monitor Composite</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MonitorComposite)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="MonitorOrientation">Monitor Orientation</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MonitorOrientation)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="MonitorResolution">Monitor Resolution</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MonitorResolution)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="MonitorType">Monitor Type</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MonitorType)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="ConversionType">Conversion Type</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.ConversionType)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            <div class="ctl-label"><label for="NumberPlayers">Number Players</label></div>
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.NumberPlayers)
+        </td>
+    </tr>
+    
+</table>

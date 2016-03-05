@@ -1,0 +1,105 @@
+﻿@model SmartStore.Admin.Models.ReferenceGames.ReferenceGamesListModel
+@using Telerik.Web.Mvc.UI
+@using SmartStore.Admin.Models.ReferenceGames
+@{
+    ViewBag.Title = "Reference Games";
+}
+@using (Html.BeginForm())
+{
+    <div class="section-header">
+        <div class="title">
+            <i class="fa fa-gamepad"></i>
+            Reference Games
+        </div>
+        <div class="options btn-toolbar">
+            @Html.Widget("admin_button_toolbar_before")
+            <a href="@Url.Action("Create")" class="btn btn-primary">
+                <i class="fa fa-plus"></i>&nbsp;@T("Admin.Common.AddNew")
+            </a>
+            @Html.Widget("admin_button_toolbar_after")
+        </div>
+    </div>
+
+    
+    <table class="adminContent">
+        <tr>
+            <td class="adminTitle">
+                <div class="ctl-label">
+                    <label for="Name">Name</label>
+                    <a title="Reference game name" tabindex="-1" onclick="return false;" href="#" class="hint"><i class="fa fa-question-circle"></i></a>
+                </div>
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => Model.Name, new { id = "search_name" } )
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                &nbsp;
+            </td>
+            <td class="adminData">
+                <button type="submit" id="search-games" value="search-games" class="btn"><i class="fa fa-search"></i>&nbsp;@T("Admin.Common.Search")</button>
+            </td>
+        </tr>
+    </table>
+    
+    <p></p>
+
+    <table class="adminContent">
+        <tr>
+            <td>
+                @(Html.Telerik().Grid<ReferenceGame>()
+                    .Name("games-grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(x => x.Name)
+                            .Template(x => Html.ActionLink(x.Name, "Edit", new { id = x.Id }))
+                            .ClientTemplate("<a href='Edit/<#= Id #>'><#= Name #></a>");
+                        columns.Bound(x => x.Genre)
+                            .Sortable(true);
+                        columns.Bound(x => x.Year)
+                            .Sortable(true)
+                            .Centered();
+                        columns.Bound(x => x.Manufacturer)
+                            .Sortable(false)
+                            .Centered();
+                    })
+            .Sortable(x =>
+            {
+                x.AllowUnsort(true);
+                x.SortMode(GridSortMode.SingleColumn);
+            })
+            .Pageable(settings => settings.PageSize(50).Position(GridPagerPosition.Both))
+            .DataBinding(dataBinding => dataBinding.Ajax().Select("GamesList", "ReferenceGames"))
+            .ClientEvents(events => events.OnDataBinding("gamesGrid_onDataBinding"))
+            .EnableCustomBinding(true)
+            .PreserveGridState())
+            </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">
+		@*used by widget SmartStore.CommonExportProviders::ExportButtonsGeneral.cshtml*@
+    var selectedIds = [];
+
+    $(document).ready(function () {
+
+        //search button
+        $('#search-games').click(function () {
+            //search
+            var grid = $('#games-grid').data('tGrid');
+            grid.currentPage = 1; //new search. Set page size to 1
+            grid.ajaxRequest();
+            return false;
+        });
+    });
+
+    function gamesGrid_onDataBinding(e) {
+        var searchModel = {
+            Name: $('#Name').val(),
+        };
+        e.data = searchModel;
+    }
+
+</script>
+}

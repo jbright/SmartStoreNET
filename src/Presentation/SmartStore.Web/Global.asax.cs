@@ -67,6 +67,10 @@ namespace SmartStore.Web
                 "Default.aspx",
                 new { controller = "Redirector", action = "HomePage", });
 
+            routes.MapRoute(
+                "Legacy_Newest_Redirect",
+                "NewArrivals.aspx",
+                new { controller = "Redirector", action = "Newest", });
 
 			// register routes (core, admin, plugins, etc)
 			var routePublisher = EngineContext.Current.Resolve<IRoutePublisher>();
