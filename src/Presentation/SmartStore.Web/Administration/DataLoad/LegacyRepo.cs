@@ -11,6 +11,11 @@ namespace SmartStore.Admin.DataLoad
 {
     public static class LegacyRepo
     {
+        public static List<string> GetAllEMails()
+        {
+            return ((new SqlConnection(ConfigurationManager.ConnectionStrings["LegacyDB"].ConnectionString)).As<ItblReceipt2Repository>()).GetAllEmails();
+        }
+
         public static List<tblGames> GetAllGames()
         {
             if (_allGames == null)

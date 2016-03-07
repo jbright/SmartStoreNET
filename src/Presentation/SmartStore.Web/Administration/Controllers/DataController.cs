@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+﻿using SmartStore.Admin.DataLoad;
 using SmartStore.Admin.Models.Catalog;
 using SmartStore.Collections;
 using SmartStore.Core;
@@ -8,8 +6,12 @@ using SmartStore.Core.Domain.Catalog;
 using SmartStore.Core.Domain.Common;
 using SmartStore.Core.Domain.Customers;
 using SmartStore.Core.Domain.Discounts;
+using SmartStore.Core.Domain.Messages;
 using SmartStore.Core.Events;
+using SmartStore.Core.Infrastructure;
+using SmartStore.Core.IO;
 using SmartStore.Core.Logging;
+using SmartStore.Data;
 using SmartStore.Services.Catalog;
 using SmartStore.Services.Common;
 using SmartStore.Services.Customers;
@@ -18,6 +20,7 @@ using SmartStore.Services.Filter;
 using SmartStore.Services.Helpers;
 using SmartStore.Services.Localization;
 using SmartStore.Services.Media;
+using SmartStore.Services.Messages;
 using SmartStore.Services.Security;
 using SmartStore.Services.Seo;
 using SmartStore.Services.Stores;
@@ -25,17 +28,16 @@ using SmartStore.Web.Framework.Controllers;
 using SmartStore.Web.Framework.Filters;
 using SmartStore.Web.Framework.Modelling;
 using SmartStore.Web.Framework.Security;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using Telerik.Web.Mvc;
 using Telerik.Web.Mvc.UI;
-using SmartStore.Admin.DataLoad;
-using System.Text;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using SmartStore.Core.Infrastructure;
-using System.IO;
-using System.Net;
-using SmartStore.Core.IO;
-using SmartStore.Data;
 
 namespace SmartStore.Admin.Controllers
 {
@@ -66,7 +68,7 @@ namespace SmartStore.Admin.Controllers
         private readonly CatalogSettings _catalogSettings;
         private readonly IEventPublisher _eventPublisher;
         private readonly IFilterService _filterService;
-
+        private readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
         #endregion
 
 		#region Constructors
@@ -83,7 +85,8 @@ namespace SmartStore.Admin.Controllers
 			AdminAreaSettings adminAreaSettings,
             CatalogSettings catalogSettings,
             IEventPublisher eventPublisher, 
-			IFilterService filterService)
+			IFilterService filterService,
+            INewsLetterSubscriptionService newsLetterSubscriptionService)
         {
             this._categoryService = categoryService;
             this._categoryTemplateService = categoryTemplateService;
@@ -107,6 +110,7 @@ namespace SmartStore.Admin.Controllers
             this._catalogSettings = catalogSettings;
 			this._eventPublisher = eventPublisher;
             this._filterService = filterService;
+            this._newsLetterSubscriptionService = newsLetterSubscriptionService;
         }
 
         #endregion
@@ -519,6 +523,47 @@ namespace SmartStore.Admin.Controllers
             toProcess.ToList().ForEach(i =>
                 ids.Add(i.ProductId));
             return Json(ids);
+        }
+
+        [ActionName("import-emails")]
+        public ActionResult ImportEmails()
+        {
+            var emails = new List<string>();
+            var legacyEmails = LegacyRepo.GetAllEMails();
+            var toProcess = legacyEmails; // legacyEmails.Take(5).ToList();
+
+            toProcess.ForEach(email =>
+                {
+                    if (email.IsEmail())
+                    {
+                        email = email.Trim();
+                        var subscription = _newsLetterSubscriptionService.GetNewsLetterSubscriptionByEmail(email, 1);
+                        if (subscription != null)
+                        {
+                            emails.Add(email + " ALREADY subscribed. Skipping.");
+                        }
+                        else
+                        {
+                            subscription = new NewsLetterSubscription
+                            {
+                                NewsLetterSubscriptionGuid = Guid.NewGuid(),
+                                Email = email,
+                                Active = true,
+                                CreatedOnUtc = DateTime.UtcNow,
+                                StoreId = 1
+                            };
+                            _newsLetterSubscriptionService.InsertNewsLetterSubscription(subscription);
+
+                            emails.Add(email + " subscribed!");
+                        }
+                    }
+                    else
+                    {
+                        emails.Add(email + " NOT considered valid!");
+                    }
+                });
+
+            return Json(emails);
         }
 
         [ActionName("get-all-categories")]

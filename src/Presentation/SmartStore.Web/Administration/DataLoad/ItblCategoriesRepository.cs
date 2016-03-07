@@ -14,4 +14,11 @@ namespace SmartStore.Admin.DataLoad
         [Sql("SELECT * FROM tblCategories2 ORDER BY LEN(strParentArray) DESC")]
         List<tblCategories> GetAllDeepFirst();
     }
+
+    public interface ItblReceipt2Repository
+    {
+        [Sql("select distinct stremail from tblReceipt2")]
+        List<string> GetAllEmails();
+
+    }
 }

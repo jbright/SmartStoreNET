@@ -5,9 +5,12 @@ using SmartStore.Services.Catalog;
 using SmartStore.Web.Framework.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Insight.Database;
 
 namespace SmartStore.Web.Controllers
 {
@@ -56,6 +59,17 @@ namespace SmartStore.Web.Controllers
 
             return RedirectPermanent("/" + url.Slug);
         }
+
+        /*
+        public ActionResult Name(int rgeid)
+        {
+            var repo = ((new SqlConnection(ConfigurationManager.ConnectionStrings["EC"].ConnectionString)).As<ReferenceGameRepository>());
+            var game = repo.GetById(rgeid);
+            if (game == null)
+                return View(model);
+
+        }
+         */ 
 
         public ActionResult Category(string c)
         {

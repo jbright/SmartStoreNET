@@ -363,6 +363,28 @@
     });
 </script>
 
+<script type="application/ld+json">
+{
+  "@@context": "http://schema.org/",
+  "@@type": "Product",
+  "name": "@(Model.Name)",
+  @if (Model.DetailsPictureModel.PictureModels != null && Model.DetailsPictureModel.PictureModels.Count > 0)
+  {
+      <text>"image": "http://quarterarcade.com@(Model.DetailsPictureModel.PictureModels[0].FullSizeImageUrl)",</text>
+  }
+  else
+  {
+      <text>"image": "http://quarterarcade.com@(Model.DetailsPictureModel.DefaultPictureModel.FullSizeImageUrl)",</text>
+  }
+  "description": "@Html.Raw(Model.ShortDescription)",
+  "offers": {
+    "@@type": "Offer",
+    "priceCurrency": "USD",
+    "price": "@Model.ProductPrice.PriceValue.ToString("0.00")"
+  }
+}
+</script>
+
 @section right 
 {
     <text>@Html.Action("index", "referencegame", new { productId = Model.Id })</text>

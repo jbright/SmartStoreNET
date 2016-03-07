@@ -28,6 +28,9 @@
                     <a href="#" id="get-all-category-images" data-url="@Url.Action("get-all-category-ids")">Get Category Images</a>
                 </li>
 
+                <li>
+                    <a href="#" id="import-emails" data-url="@Url.Action("import-emails")">Import All Emails</a>
+                </li>
             </ul>
         </td>
         <td>
@@ -61,6 +64,18 @@ Total Count: @toProcess.Count();
 
 <script type="text/javascript">
     $(function () {
+
+        $('#import-emails').click(function (e) {
+            e.preventDefault();
+            $("#status").html("");
+            $.post($(this).data('url'), {
+                count: $('#pictures-count').val()
+            }, function (results) {
+                $.each(results, function (index, value) {
+                    $("#status").append("<div>" + value + "</div>");
+                });
+            });
+        });
 
         $('#get-all-categories').click(function (e) {
             e.preventDefault();

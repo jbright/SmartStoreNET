@@ -97,6 +97,10 @@ namespace SmartStore.Web.Controllers
 
     public interface ReferenceGameRepository
     {
+        [Sql("SELECT * FROM QA_ReferenceGame WHERE Id=@Id")]
+        ReferenceGame GetById(int Id);
+
+
         [Sql("SELECT * FROM QA_ReferenceGame WHERE Name=@name")]
         ReferenceGame GetByName(string name);
 

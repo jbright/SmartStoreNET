@@ -51,7 +51,12 @@ namespace SmartStore.Web
                 "Game.aspx/{id}",
                 new { controller = "Redirector", action = "Product", },
                 new { id = @"\d+" });
-
+            /*
+            routes.MapRoute(
+                "Legacy_Name_Redirect",
+                "name.aspx",
+                new { controller = "Redirector", action = "Name", });
+            */
             routes.MapRoute(
                 "Legacy_Category_Redirect",
                 "Browse.aspx",

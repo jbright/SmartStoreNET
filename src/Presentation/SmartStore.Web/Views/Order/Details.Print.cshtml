@@ -72,13 +72,26 @@
 						{
 							<div>@address.Address2</div>
 						}
-						@if (address.ZipPostalCodeEnabled || address.CityEnabled)
+                        @if (address.CityEnabled || address.StateProvinceEnabled || address.ZipPostalCodeEnabled)
+                        {
+                                if (address.CityEnabled)
+                                {
+                                    <text>@(address.City),</text>
+                                }
+                                if (address.StateProvinceEnabled)
+                                {
+                                    @address.StateProvinceName
+                                }
+                                if (address.ZipPostalCodeEnabled)
+                                {
+                                    <text>
+                                    @address.ZipPostalCode
+                                    </text>
+                                }
+                        }                        
+						@if (address.CountryEnabled)
 						{
-							<div>@JoinValues(new string[] { address.ZipPostalCode, address.City })</div>
-						}
-						@if (address.StateProvinceEnabled || address.CountryEnabled)
-						{
-							<div>@JoinValues(new string[] { address.CountryName, address.StateProvinceName }, ", ")</div>
+							<div>@(address.CountryName)</div>
 						}
 					</div>
 				</div>
