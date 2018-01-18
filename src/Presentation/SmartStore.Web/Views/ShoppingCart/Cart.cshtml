@@ -11,7 +11,7 @@
     Html.AddTitleParts(T("PageTitle.ShoppingCart").Text);
 }
 <!-- Store Paused HACK -->
-@if (false)
+@if (true)
 {
     @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Cart })
 }
