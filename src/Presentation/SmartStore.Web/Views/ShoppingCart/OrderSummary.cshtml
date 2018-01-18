@@ -387,7 +387,8 @@
 
 				@Html.Widget("order_summary_content_totals_bottom")
 
-				@if (Model.IsEditable)
+                <!-- Store Paused HACK -->
+				@if (Model.IsEditable && false)
 				{
                     if (String.IsNullOrEmpty(Model.MinOrderSubtotalWarning))
 					{

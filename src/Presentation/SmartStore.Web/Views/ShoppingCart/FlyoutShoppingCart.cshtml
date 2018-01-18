@@ -116,7 +116,9 @@
                     <i class="fa fa-shopping-cart" style="display: none"></i>
                 </a>    
             }
-            @if (Model.DisplayCheckoutButton)
+
+            <!-- Store Paused HACK -->
+            @if (Model.DisplayCheckoutButton && false)
             {
                 var checkoutUrl = "";
                 if (Model.AnonymousCheckoutAllowed && Model.CurrentCustomerIsGuest)
