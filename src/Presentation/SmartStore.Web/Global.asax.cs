@@ -160,6 +160,8 @@ namespace SmartStore.Web
 				GlobalFilters.Filters.Add(new HandleInstallFilter());
 			}
 
+            // Required so that UPS plugin works.
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
         }
 
         public override string GetVaryByCustomString(HttpContext context, string custom)
