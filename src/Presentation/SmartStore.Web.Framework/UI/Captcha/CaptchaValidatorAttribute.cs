@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using SmartStore.Core.Logging;
@@ -15,7 +17,9 @@ namespace SmartStore.Web.Framework.UI.Captcha
 {
 	public class CaptchaValidatorAttribute : ActionFilterAttribute
     {
-		public Lazy<CaptchaSettings> CaptchaSettings { get; set; }
+        private static readonly HttpClient Client = new HttpClient();
+
+        public Lazy<CaptchaSettings> CaptchaSettings { get; set; }
 		public Lazy<ILogger> Logger { get; set; }
 		public Lazy<ILocalizationService> LocalizationService { get; set; }
 
@@ -29,33 +33,32 @@ namespace SmartStore.Web.Framework.UI.Captcha
 				var verifyUrl = CommonHelper.GetAppSetting<string>("g:RecaptchaVerifyUrl");
 				var recaptchaResponse = filterContext.HttpContext.Request.Form["g-recaptcha-response"];
 
-				var url = "{0}?secret={1}&response={2}".FormatInvariant(
-					verifyUrl,
-					HttpUtility.UrlEncode(captchaSettings.ReCaptchaPrivateKey),
-					HttpUtility.UrlEncode(recaptchaResponse)
-				);
+                var values = new Dictionary<string, string>
+                {
+                   { "secret", captchaSettings.ReCaptchaPrivateKey },
+                   { "response", recaptchaResponse }
+                };
 
-				using (var client = new WebClient())
-				{
-					var jsonResponse = client.DownloadString(url);
-					using (var memoryStream = new MemoryStream(Encoding.Unicode.GetBytes(jsonResponse)))
-					{
-						var serializer = new DataContractJsonSerializer(typeof(GoogleRecaptchaApiResponse));
-						var result = serializer.ReadObject(memoryStream) as GoogleRecaptchaApiResponse;
+                // POST the data per the spec
+                var task = Task.Run(() => Client.PostAsync(verifyUrl, new FormUrlEncodedContent(values)));
+                task.Wait();
+                var response = task.Result;
 
-						if (result == null)
-						{
-							Logger.Value.Error(LocalizationService.Value.GetResource("Common.CaptchaUnableToVerify"));
-						}
-						else
-						{
-							if (result.ErrorCodes == null)
-							{
-								valid = result.Success;
-							}
-						}
-					}
-				}
+                // Convert the results to a string.
+                var stringTask = Task.Run(() => response.Content.ReadAsStringAsync());
+                stringTask.Wait();
+
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(stringTask.Result)))
+                {
+                    // Deserialize
+                    var serializer = new DataContractJsonSerializer(typeof(GoogleRecaptchaApiResponse));
+                    var result = serializer.ReadObject(ms) as GoogleRecaptchaApiResponse;
+
+                    if (result == null)
+                        Logger.Value.Error(LocalizationService.Value.GetResource("Common.CaptchaUnableToVerify"));
+                    else if (result.ErrorCodes == null)
+                        valid = result.Success;
+                }
 			}
 			catch (Exception exception)
 			{

@@ -18,3 +18,5 @@ echo "Unable to detect suitable environment. Build may not succeed."
 :build
 
 msbuild SmartStoreNET.proj /p:DebugSymbols=false /p:DebugType=None /P:SlnName=SmartStoreNET /maxcpucount %*
+
+
